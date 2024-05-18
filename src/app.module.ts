@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './modules/user/controllers/user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './modules/user/entities/user';
-import { UserService } from './modules/user/services/user.service';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
+    JwtModule.register({
+      secret: 'secret-key',
+      signOptions: { expiresIn: '24h' }
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -18,6 +22,7 @@ import { UserModule } from './modules/user/user.module';
       synchronize: true, // set to false in production
     }),
     UserModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
